@@ -1,18 +1,16 @@
-import React, { useContext } from "react"
+import React from "react"
 import FilterOptions from "./app/components/FilterOptions"
 import AddTodo from "./app/containers/AddTodo"
 import VisibleTodoList from "./app/containers/VisibleTodoList"
-import { Auth0Context } from "./contexts/auth0-context"
+import Navbar from "./app/components/Navbar"
 
 function App() {
-  const auth0 = useContext(Auth0Context)
-
   return (
     <div>
+      <Navbar />
       <AddTodo />
       <FilterOptions />
       <VisibleTodoList />
-      <button onClick={auth0.loginWithRedirect}>Login</button>
     </div>
   )
 }

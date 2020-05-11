@@ -1,8 +1,11 @@
-import React, { createContext, Component } from "react"
+import React, { createContext, Component, useContext } from "react"
 import createAuth0Client from "@auth0/auth0-spa-js"
 
 // Create the context
 export const Auth0Context = createContext()
+
+// Use Auth0
+export const useAuth0 = () => useContext(Auth0Context)
 
 // Create a provider
 export class Auth0Provider extends Component {
@@ -14,9 +17,9 @@ export class Auth0Provider extends Component {
   }
 
   config = {
-    domain: process.env.AUTH0_DOMAIN,
-    clientId: process.env.AUTH0_CLIENT_ID,
-    redirectURI: window.location.origin,
+    domain: process.env.REACT_APP_AUTH0_DOMAIN,
+    client_id: process.env.REACT_APP_AUTH0_CLIENT_ID,
+    redirect_uri: window.location.origin,
   }
 
   componentDidMount() {
@@ -25,9 +28,25 @@ export class Auth0Provider extends Component {
 
   initializeAuth0 = async () => {
     const auth0Client = await createAuth0Client(this.config)
+    this.setState({ auth0Client })
+
+    // Check to see if they have been redirected after login
+    if (window.location.search.includes("code=")) {
+      return this.handleRedirectCallback()
+    }
+
     const isAuthenticated = await auth0Client.isAuthenticated()
     const user = isAuthenticated ? await auth0Client.getUser() : null
-    this.setState({ auth0Client, isLoading: false, isAuthenticated, user })
+    this.setState({ isLoading: false, isAuthenticated, user })
+  }
+
+  handleRedirectCallback = async () => {
+    this.setState({ isLoading: true })
+    await this.state.auth0Client.handleRedirectCallback()
+    const user = await this.state.auth0Client.getUser()
+
+    this.setState({ user, isAuthenticated: true, isLoading: false })
+    window.history.replaceState({}, document.title, window.location.pathname)
   }
 
   render() {

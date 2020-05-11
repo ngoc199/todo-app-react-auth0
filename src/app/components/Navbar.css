@@ -1,0 +1,28 @@
+nav {
+  background-color: #333;
+  padding: 1rem;
+  text-align: right;
+}
+
+nav p {
+  display: inline-block;
+  color: #fff;
+  font-family: inherit;
+}
+
+nav button {
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem;
+  background-color: transparent;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  font-family: inherit;
+}
+
+nav button:hover {
+  cursor: pointer;
+  background-color: #fff;
+  color: #333;
+}
